@@ -1,0 +1,17 @@
+{
+  "min_major": 3,
+  "months_back": 12,
+  "channel": "stable",
+  "variants": [
+    "base",
+    "web",
+    "android",
+    "full"
+  ],
+  "platforms": {
+    "base": "linux/amd64,linux/arm64",
+    "web": "linux/amd64,linux/arm64",
+    "android": "linux/amd64",
+    "full": "linux/amd64"
+  }
+}
