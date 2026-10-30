@@ -4,7 +4,7 @@ set -euo pipefail
 img="${1:?image}"; variant="${2:?variant}"; want="${3:?version}"
 plat=(); [[ "$variant" == "android" || "$variant" == "full" ]] && plat=(--platform linux/amd64)
 
-run() { docker run --rm "${plat[@]}" "$img" bash -lc "$1"; }
+run() { docker run --rm "${plat[@]}" "$img" bash -c "$1"; }
 
 echo ">> version check"
 run "flutter --version" | tee /dev/stderr | grep -q "Flutter $want" \

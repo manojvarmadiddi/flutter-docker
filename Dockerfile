@@ -18,6 +18,10 @@ RUN test -n "${FLUTTER_VERSION}" || (echo "FLUTTER_VERSION build arg is required
  && rm -rf /var/lib/apt/lists/* \
  && useradd --create-home --shell /bin/bash flutter \
  && git clone --depth 1 --branch "${FLUTTER_VERSION}" https://github.com/flutter/flutter.git "${FLUTTER_HOME}" \
+ && git -C "${FLUTTER_HOME}" remote set-branches origin "${FLUTTER_CHANNEL}" \
+ && git -C "${FLUTTER_HOME}" fetch --depth 1 origin "${FLUTTER_CHANNEL}" \
+ && git -C "${FLUTTER_HOME}" checkout -q -B "${FLUTTER_CHANNEL}" \
+ && git -C "${FLUTTER_HOME}" branch --set-upstream-to="origin/${FLUTTER_CHANNEL}" "${FLUTTER_CHANNEL}" \
  && chown -R flutter:flutter "${FLUTTER_HOME}" \
  && git config --system --add safe.directory "${FLUTTER_HOME}" \
  && mkdir -p /sdks && ln -s "${FLUTTER_HOME}" /sdks/flutter
@@ -28,7 +32,8 @@ RUN flutter config --no-analytics --no-cli-animations \
  && flutter precache --linux \
  && flutter --version
 
-LABEL org.opencontainers.image.title="flutter" \
+LABEL org.opencontainers.image.source="https://github.com/manojvarmadiddi/flutter-docker" \
+      org.opencontainers.image.title="flutter" \
       org.opencontainers.image.description="Flutter ${FLUTTER_VERSION} (${FLUTTER_CHANNEL})" \
       org.opencontainers.image.licenses="MIT"
 
