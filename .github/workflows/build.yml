@@ -7,10 +7,6 @@ on:
         description: "Flutter version (e.g. 3.44.0) or 'stable'"
         required: true
         default: stable
-      variants:
-        description: "Comma-separated variants: base,web,android,full"
-        required: true
-        default: base,web,android,full
       push:
         description: "Push images to GHCR"
         type: boolean
@@ -18,7 +14,6 @@ on:
   workflow_call:
     inputs:
       flutter_version: { type: string, required: true }
-      variants:        { type: string, required: true }
       push:            { type: boolean, default: true }
 
 concurrency:
@@ -33,14 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.r.outputs.version }}
-      matrix: ${{ steps.r.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - id: r
         run: |
           source scripts/lib.sh
           echo "version=$(resolve_version '${{ inputs.flutter_version }}')" >> "$GITHUB_OUTPUT"
-          echo "matrix=$(echo '${{ inputs.variants }}' | tr -d ' ' | jq -R -c 'split(",")')" >> "$GITHUB_OUTPUT"
 
   build:
     needs: prepare
@@ -49,10 +42,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    strategy:
-      fail-fast: false
-      matrix:
-        variant: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -67,6 +56,6 @@ jobs:
       - name: Build
         run: |
           owner="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          args=(--version '${{ needs.prepare.outputs.version }}' --variant '${{ matrix.variant }}' --image "ghcr.io/${owner}/flutter")
+          args=(--version '${{ needs.prepare.outputs.version }}' --image "ghcr.io/${owner}/flutter")
           [[ '${{ inputs.push }}' == 'true' ]] && args+=(--push)
           ./scripts/build.sh "${args[@]}"

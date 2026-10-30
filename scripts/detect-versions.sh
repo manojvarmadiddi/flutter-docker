@@ -2,7 +2,7 @@
 # Usage: detect-versions.sh [--missing <image>]
 # Prints a JSON array of stable versions in policy (major >= min_major and
 # released within months_back). With --missing, drops versions whose
-# <image>:<version> tag (base variant) already exists in the registry.
+# <image>:<version> tag already exists in the registry.
 source "$(dirname "$0")/lib.sh"
 
 policy="$ROOT_DIR/config/policy.json"
