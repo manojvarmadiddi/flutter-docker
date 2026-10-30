@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Usage: test-image.sh <image:tag> <expected-version>
+# Usage: test-image.sh <image:tag> <expected-version> [platform]
 set -euo pipefail
-img="${1:?image}"; want="${2:?version}"
+img="${1:?image}"; want="${2:?version}"; plat=(); [[ -n "${3:-}" ]] && plat=(--platform "$3")
 
-run() { docker run --rm --platform linux/amd64 "$img" bash -c "$1"; }
+run() { docker run --rm "${plat[@]}" "$img" bash -c "$1"; }
 
 echo ">> version check"
 run "flutter --version" | tee /dev/stderr | grep -q "Flutter $want" \

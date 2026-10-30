@@ -31,9 +31,13 @@ args=(--target full --build-arg "FLUTTER_VERSION=$version"
 while read -r tag; do args+=(-t "$tag"); done < <("$ROOT_DIR/scripts/resolve-tags.sh" "$version" "$IMAGE")
 for t in "${extra_tags[@]:-}"; do [[ -n "$t" ]] && args+=(-t "$t"); done
 
-p="${platform:-$(jq -r .platform "$ROOT_DIR/config/policy.json")}"
-args+=(--platform "$p")
-if $push; then args+=(--push); else args+=(--load); fi
+if $push; then
+  args+=(--platform "${platform:-$(jq -r .platform "$ROOT_DIR/config/policy.json")}" --push)
+else
+  # --load holds a single platform: use the one given, else the host's native one
+  [[ -n "$platform" ]] && args+=(--platform "$platform")
+  args+=(--load)
+fi
 
 cmd=(docker buildx build "${args[@]}" "$ROOT_DIR")
 echo ">> ${cmd[*]}"

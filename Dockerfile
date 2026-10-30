@@ -55,10 +55,11 @@ ARG ANDROID_CMDLINE_TOOLS=11076708
 USER root
 RUN apt-get update \
  && apt-get install -y --no-install-recommends openjdk-17-jdk-headless \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -s "/usr/lib/jvm/java-17-openjdk-$(dpkg --print-architecture)" /usr/lib/jvm/java-17
 ENV ANDROID_HOME=/opt/android-sdk \
     ANDROID_SDK_ROOT=/opt/android-sdk \
-    JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+    JAVA_HOME=/usr/lib/jvm/java-17
 ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
 RUN mkdir -p "${ANDROID_HOME}/cmdline-tools" \
  && curl -fsSL -o /tmp/cmdline-tools.zip \

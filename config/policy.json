@@ -2,5 +2,5 @@
   "min_major": 3,
   "months_back": 12,
   "channel": "stable",
-  "platform": "linux/amd64"
+  "platform": "linux/amd64,linux/arm64"
 }
