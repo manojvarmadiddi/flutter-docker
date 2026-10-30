@@ -1,0 +1,5 @@
+[
+  { "min_flutter": "3.0.0",  "platform": "34", "build_tools": "34.0.0" },
+  { "min_flutter": "3.27.0", "platform": "35", "build_tools": "35.0.0" },
+  { "min_flutter": "3.35.0", "platform": "36", "build_tools": "36.0.0" }
+]
